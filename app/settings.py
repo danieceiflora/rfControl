@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-=(x(vcy6*z5#*2jzwonxg-+6qw1f(jk_x=gm^-@j2ry4u89jpz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -77,7 +77,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'rf_control',
         'USER': 'postgres',
-        'PASSWORD': 'Cei@dsm21',
+        'PASSWORD': 'SenhaJorge@2025',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -119,6 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
