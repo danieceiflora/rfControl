@@ -144,6 +144,7 @@ SIMPLE_JWT = {
 }
 
 JAZZMIN_SETTINGS = {
+    "site_header": "Rf Control",
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "RF CONTROL",
 
