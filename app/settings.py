@@ -150,7 +150,11 @@ JAZZMIN_SETTINGS = {
     # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     "site_brand": "RF_CONTROL",
 
-      "icons": {
+        # Welcome text on the login screen
+    "welcome_sign": "Bem-vindo ao Rf Control.",
+
+    
+    "icons": {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
