@@ -152,6 +152,15 @@ JAZZMIN_SETTINGS = {
 
         # Welcome text on the login screen
     "welcome_sign": "Bem-vindo ao Rf Control.",
+    # Links to put along the top menu
+    "topmenu_links": [
+
+        # Url that gets reversed (Permissions can be added)
+        {"name": "Documentação",  "url": "/api/v1", "permissions": ["auth.view_user"]},
+
+    
+    ],
+
 
     
     "icons": {
