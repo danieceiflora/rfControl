@@ -153,7 +153,7 @@ JAZZMIN_SETTINGS = {
         # Welcome text on the login screen
     "welcome_sign": "Bem-vindo ao Rf Control.",
     # Links to put along the top menu
-    "topmenu_links": [
+    "usermenu_links": [
 
         # Url that gets reversed (Permissions can be added)
         {"name": "Documentação API",  "url": "/api/v1/docs/swagger/", "new_window": True,"permissions": ["auth.view_user"]},
