@@ -17,6 +17,8 @@ Este projeto foi desenvolvido para receber os dados enviados por sensores de cam
 - Para consumir as rotas api, será necessário ter um token jwt, que será gerado para o usuário através da rota :
 api/v1/autenticacao/token
 
+O token terá a duração de 1 dia. 
+
 Para gerar o token será necessário fazer login com usuário e senha.
 
 ## Tecnologias utilizadas 
