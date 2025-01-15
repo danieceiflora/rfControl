@@ -156,7 +156,7 @@ JAZZMIN_SETTINGS = {
     "usermenu_links": [
 
         # Url that gets reversed (Permissions can be added)
-        {"name": "Documentação API",  "url": "/api/v1/docs/swagger/", "new_window": True,"permissions": ["auth.view_user"]},
+        {"name": "Documentação API",  "url": "/api/v1/docs/swagger/", "new_window": True,"permissions": ["auth.view_user"], "icon": "fas fa-book"},
         # Url that gets reversed (Permissions can be added)
         {"name": "Gerar API TOKEN",  "url": "/api/v1/authentication/token/", "new_window": True,"permissions": ["auth.view_user"]},
 
@@ -174,7 +174,7 @@ JAZZMIN_SETTINGS = {
         "rfs.CadastroSensor": "fas fa-tower-broadcast",
         "rfs.CadastroEquipamento": "fas fa-wrench",
         "rfs.CadastroTipoSensor": "fas fa-shapes",
-        "usermenu_links": "fas fa-sitemap",
+        
 
     },
 
