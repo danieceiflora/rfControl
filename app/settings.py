@@ -156,7 +156,7 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
 
         # Url that gets reversed (Permissions can be added)
-        {"name": "Documentação",  "url": "/api/v1/docs/swagger/", "permissions": ["auth.view_user"]},
+        {"name": "Documentação",  "url": "/api/v1/docs/swagger/", "new_window": True,"permissions": ["auth.view_user"]},
 
     
     ],
