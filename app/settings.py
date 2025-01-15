@@ -156,9 +156,9 @@ JAZZMIN_SETTINGS = {
     "usermenu_links": [
 
         # Url that gets reversed (Permissions can be added)
-        {"name": "Documentação API",  "url": "/api/v1/docs/swagger/", "new_window": True,"permissions": ["auth.view_user"], "icon": "fas fa-book"},
+        {"name": "Documentação API",  "url": "/api/v1/docs/swagger/", "new_window": True, "icon": "fas fa-book"},
         # Url that gets reversed (Permissions can be added)
-        {"name": "Gerar API TOKEN",  "url": "/api/v1/authentication/token/", "new_window": True,"permissions": ["auth.view_user"]},
+        {"name": "Gerar API TOKEN",  "url": "/api/v1/authentication/token/", "new_window": True, "icon": "fas fa-key "},
 
     
     ],
