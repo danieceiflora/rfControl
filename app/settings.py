@@ -174,7 +174,7 @@ JAZZMIN_SETTINGS = {
         "rfs.CadastroSensor": "fas fa-tower-broadcast",
         "rfs.CadastroEquipamento": "fas fa-wrench",
         "rfs.CadastroTipoSensor": "fas fa-shapes",
-       
+        "usermenu_links": "fas fa-sitemap",
 
     },
 
