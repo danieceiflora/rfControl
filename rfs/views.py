@@ -1,7 +1,7 @@
-from .serializers import UnidadeMedidaSerializer, CadastroFabricanteSerializer, CadastroEquipamentoSerializer, CadastroSensorSerializer, CadastroTipoSensorSerializer
+from .serializers import UnidadeMedidaSerializer, CadastroFabricanteSerializer, CadastroEquipamentoSerializer, CadastroSensorSerializer, CadastroTipoSensorSerializer, InstalacaoSensorSerializer
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from .models import CadastroUnidadeMedida, CadastroEquipamento, CadastroFabricante, CadastroSensor, CadastroTipoSensor
+from .models import CadastroUnidadeMedida, CadastroEquipamento, CadastroFabricante, CadastroSensor, CadastroTipoSensor, InstalacaoSensor
 from  app.permissions import GlobalDefaultPermissionClass
 ## view de listar e criar Unidade Medida
 class UnidadeMedidaView(generics.ListCreateAPIView):
@@ -60,4 +60,12 @@ class TipoSensorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView)
     queryset = CadastroTipoSensor.objects.all()
     serializer_class = CadastroTipoSensorSerializer
 
+class InstalacaoSensorView(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated, GlobalDefaultPermissionClass,)
+    queryset = InstalacaoSensor.objects.all()
+    serializer_class = InstalacaoSensorSerializer
 
+class InstalacaoSensorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated, GlobalDefaultPermissionClass,)
+    queryset = InstalacaoSensor.objects.all()
+    serializer_class = InstalacaoSensorSerializer
