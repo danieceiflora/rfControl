@@ -106,3 +106,10 @@ class InstalacaoSensor(models.Model):
     dataInstalacaoSensor = models.DateField(verbose_name='Data de instalação')
     criado_em = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
     atualizado_em = models.DateTimeField(auto_now=True, blank=True, null=True, verbose_name='Atualizado em')
+
+    class Meta:
+        verbose_name = 'Instalação de Sensor'
+        verbose_name_plural = 'Instalação de Sensores'
+    
+    def __str__(self):
+        return self.idSensor
