@@ -48,7 +48,7 @@ class CadastroTipoSensorAdmin(admin.ModelAdmin):
 admin.site.register(CadastroTipoSensor, CadastroTipoSensorAdmin)
 
 class InstalacaoSensorAdmin(admin.ModelAdmin):
-    list_display = ('idSensor', 'idEquipamento', 'dataInstalacao', 'criado_em', 'atualizado_em')
-    search_fields = ('idSensor__descricao', 'idEquipamento__descricao', 'dataInstalacao')
+    list_display = ('idSensor', 'idEquipamento', 'dataInstalacaoSensor', 'criado_em', 'atualizado_em')
+    search_fields = ('idSensor__descricao', 'idEquipamento__descricao', 'dataInstalacaoSensor')
 
 admin.site.register(InstalacaoSensor, InstalacaoSensorAdmin)
