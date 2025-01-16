@@ -111,5 +111,5 @@ class InstalacaoSensor(models.Model):
         verbose_name = 'Instalação de Sensor'
         verbose_name_plural = 'Instalação de Sensores'
     def __str__(self):
-        return 'Instalação de Sensor'
+        return 'iten'
     
