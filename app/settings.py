@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=(x(vcy6*z5#*2jzwonxg-+6qw1f(jk_x=gm^-@j2ry4u89jpz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -175,6 +175,7 @@ JAZZMIN_SETTINGS = {
         "rfs.CadastroSensor": "fas fa-tower-broadcast",
         "rfs.CadastroEquipamento": "fas fa-wrench",
         "rfs.CadastroTipoSensor": "fas fa-shapes",
+        "rfs.InstalacaoSensor": "fas fa-calendar-check",
         
 
     },
