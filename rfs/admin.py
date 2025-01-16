@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CadastroUnidadeMedida, CadastroFabricante, CadastroSensor, CadastroEquipamento, CadastroTipoSensor
+from .models import CadastroUnidadeMedida, CadastroFabricante, CadastroSensor, CadastroEquipamento, CadastroTipoSensor, InstalacaoSensor
 
 
 
@@ -30,7 +30,7 @@ class CadastroFabricanteAdmin(admin.ModelAdmin):
 admin.site.register(CadastroFabricante, CadastroFabricanteAdmin)
 
 class CadastroSensorAdmin(admin.ModelAdmin):
-    list_display = ('descricao', 'idOrigem', 'IdFabricante', 'IdTipoSensor', 'dataInstalacao', 'criado_em', 'atualizado_em')
+    list_display = ('descricao', 'idOrigem', 'IdFabricante', 'IdTipoSensor', 'criado_em', 'atualizado_em')
     search_fields = ('descricao', 'idOrigem')
 
 admin.site.register(CadastroSensor, CadastroSensorAdmin)
@@ -46,3 +46,9 @@ class CadastroTipoSensorAdmin(admin.ModelAdmin):
     search_fields = ('descricao', 'idOrigem')
 
 admin.site.register(CadastroTipoSensor, CadastroTipoSensorAdmin)
+
+class InstalacaoSensorAdmin(admin.ModelAdmin):
+    list_display = ('idSensor', 'idEquipamento', 'dataInstalacao', 'criado_em', 'atualizado_em')
+    search_fields = ('idSensor__descricao', 'idEquipamento__descricao')
+
+admin.site.register(InstalacaoSensor, InstalacaoSensorAdmin)
