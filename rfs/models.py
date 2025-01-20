@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 import re
 
 class CadastroUnidadeMedida(models.Model):
-    descricao = models.TextField(verbose_name='Descrição')
+    descricao = models.CharField(max_length=200, verbose_name='Descrição')
     idOrigem = models.CharField(max_length=20, blank=True, null=True, verbose_name='Id de Origem')
     simbolo = models.CharField(max_length=20, verbose_name='Símbolo')
     criado_em = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
@@ -49,7 +49,7 @@ class CadastroFabricante(models.Model):
         return self.nome
     
 class CadastroTipoSensor(models.Model):
-    descricao = models.TextField(verbose_name='Descrição')
+    descricao = models.CharField(max_length=200, verbose_name='Descrição')
     idOrigem = models.CharField(max_length=20, blank=True, null=True, verbose_name='Id de Origem')
     IdUnidadeMedida = models.ForeignKey(CadastroUnidadeMedida, on_delete=models.PROTECT, verbose_name='Unidade de Medida')
     leituraMinimaOperacao = models.FloatField(verbose_name='Leitura Mínima de Operação')
@@ -71,12 +71,14 @@ class CadastroTipoSensor(models.Model):
         return self.descricao
 
 class CadastroSensor(models.Model):
-    descricao = models.TextField(verbose_name='Descrição')
+    descricao = models.CharField(max_length=200,verbose_name='Descrição')
     idOrigem = models.CharField(max_length=20, blank=True, null=True, verbose_name='Id de Origem')
     IdFabricante = models.ForeignKey(CadastroFabricante, on_delete=models.PROTECT, verbose_name='Fabricante')
     IdTipoSensor = models.ForeignKey(CadastroTipoSensor, on_delete=models.PROTECT, verbose_name='Tipo de Sensor')
     criado_em = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
     atualizado_em = models.DateTimeField(auto_now=True, blank=True, null=True, verbose_name='Atualizado em')
+
+    
 
     class Meta:
         verbose_name = 'Sensor'
@@ -86,7 +88,7 @@ class CadastroSensor(models.Model):
         return self.descricao
 
 class CadastroEquipamento(models.Model):
-    descricao = models.TextField(verbose_name='Descrição')
+    descricao = models.CharField(max_length=200,verbose_name='Descrição')
     idOrigem = models.CharField(max_length=20, blank=True, null=True, verbose_name='Id de Origem')
     idFabricante = models.ForeignKey(CadastroFabricante, on_delete=models.PROTECT, verbose_name='Fabricante')
     descricaoInstalacao = models.TextField(verbose_name='Descrição de Instalação')
@@ -106,10 +108,12 @@ class InstalacaoSensor(models.Model):
     dataInstalacaoSensor = models.DateField(verbose_name='Data de instalação')
     criado_em = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
     atualizado_em = models.DateTimeField(auto_now=True, blank=True, null=True, verbose_name='Atualizado em')
+    data_remocao_sensor = models.DateField(blank=True, null=True, verbose_name='Data de Remoção')
 
     class Meta:
         verbose_name = 'Instalação de Sensor'
         verbose_name_plural = 'Instalação de Sensores'
     def __str__(self):
         return 'iten'
-    
+
+
