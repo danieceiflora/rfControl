@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 import re
 
 class CadastroUnidadeMedida(models.Model):
+    
     descricao = models.CharField(max_length=200, verbose_name='Descrição')
     idOrigem = models.CharField(max_length=20, blank=True, null=True, verbose_name='Id de Origem')
     simbolo = models.CharField(max_length=20, verbose_name='Símbolo')
@@ -20,6 +21,7 @@ class CadastroUnidadeMedida(models.Model):
 
 
 class CadastroFabricante(models.Model):
+    
     nome = models.CharField(max_length=200, verbose_name='Nome')
     idOrigem = models.CharField(max_length=20, blank=True, null=True, verbose_name='Id de Origem')
     cnpj = models.CharField(max_length=20, verbose_name='CNPJ', unique=True, validators=[validar_cnpj])
