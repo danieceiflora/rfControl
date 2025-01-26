@@ -16,7 +16,7 @@ class CadastroUnidadeMedida(models.Model):
         verbose_name_plural = 'Unidades de Medidas'
 
     def __str__(self):
-        return self.descricao
+        return f"{self.id} - {self.descricao}"
     
 
 
@@ -48,7 +48,7 @@ class CadastroFabricante(models.Model):
         verbose_name_plural = 'Fabricantes'
 
     def __str__(self):
-        return self.nome
+        return f"{self.id} - {self.nome}"
     
 class CadastroTipoSensor(models.Model):
     descricao = models.CharField(max_length=200, verbose_name='Descrição')
@@ -70,7 +70,7 @@ class CadastroTipoSensor(models.Model):
         verbose_name_plural = 'Tipos de Sensores'
 
     def __str__(self):
-        return self.descricao
+        return f"{self.id} - {self.descricao}"
 
 class CadastroSensor(models.Model):
     descricao = models.CharField(max_length=200,verbose_name='Descrição')
@@ -80,14 +80,12 @@ class CadastroSensor(models.Model):
     criado_em = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
     atualizado_em = models.DateTimeField(auto_now=True, blank=True, null=True, verbose_name='Atualizado em')
 
-    
-
     class Meta:
         verbose_name = 'Sensor'
         verbose_name_plural = 'Sensores'
 
     def __str__(self):
-        return self.descricao
+        return f"{self.id} - {self.descricao}"
 
 class CadastroEquipamento(models.Model):
     descricao = models.CharField(max_length=200,verbose_name='Descrição')
@@ -102,7 +100,7 @@ class CadastroEquipamento(models.Model):
         verbose_name_plural = 'Equipamentos'
     
     def __str__(self):
-        return self.descricao
+        return f"{self.id} - {self.descricao}"
     
 class InstalacaoSensor(models.Model):
     idSensor = models.ForeignKey(CadastroSensor, on_delete=models.PROTECT, verbose_name='Sensor')
@@ -115,7 +113,22 @@ class InstalacaoSensor(models.Model):
     class Meta:
         verbose_name = 'Instalação de Sensor'
         verbose_name_plural = 'Instalação de Sensores'
+
+    ##antes de salvar , preciso verificar se já existe alguma instalação com o id do sensor.    
+    def clean(self):
+        # Verificar se é um novo registro (não está sendo editado)
+        if not self.pk:
+            # Verificar se já existe uma instalação para o sensor sem data de remoção
+            if InstalacaoSensor.objects.filter(idSensor=self.idSensor, data_remocao_sensor__isnull=True).exists():
+                raise ValidationError(f"O sensor {self.idSensor} não pode ser instalado novamente sem a data de remoção preenchida.")
+        
+        # Certificar-se de que o idSensor está presente antes de salvar
+        if not self.idSensor:
+            raise ValidationError("O campo 'Sensor' não pode ser vazio.")
+        
+        super().clean()
+
     def __str__(self):
-        return 'iten'
+        return str(self.idSensor)
 
-
+ 

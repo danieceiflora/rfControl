@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import CadastroUnidadeMedida, CadastroFabricante, CadastroSensor, CadastroEquipamento, CadastroTipoSensor, InstalacaoSensor
 from django.db.models import Q
+from django.forms import ModelForm
+
 
 
 class unidadeMedidaAdmin(admin.ModelAdmin):
@@ -13,8 +15,8 @@ class CadastroFabricanteAdmin(admin.ModelAdmin):
     class Media:
         js = ('admin_custom.js',)
 
-    list_display = ('id', 'nome', 'idOrigem', 'cnpj_formatado', 'telefone_formatado', 'criado_em', 'atualizado_em')
-    search_fields = ('nome', 'idOrigem')
+    list_display = ('id', 'nome',  'cnpj_formatado', 'telefone_formatado', )
+    search_fields = ('nome', 'id')
     
 
     def telefone_formatado(self, obj):
@@ -31,46 +33,145 @@ class CadastroFabricanteAdmin(admin.ModelAdmin):
 admin.site.register(CadastroFabricante, CadastroFabricanteAdmin)
 
 class CadastroSensorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'descricao', 'idOrigem', 'IdFabricante', 'IdTipoSensor', 'criado_em', 'atualizado_em')
-    search_fields = ('descricao', 'idOrigem')
+    list_display = ('id', 'descricao', 'IdFabricante', 'IdTipoSensor', 'is_available', 'listar_equipamentos')
+    search_fields = ('descricao', 'id')
+    #retornar um listdisplay com um campo para mostrar se está disponível ou não, para verificar isto
+    #preciso verificar se o sensor existe na tabela de instalação, se existir, mas estiver com data de remoção, entao ele nao esta disponivel
+    #se não existir, também está disponível
+    def is_available(self, obj):
+        if InstalacaoSensor.objects.filter(idSensor=obj).exists():
+            return "Indisponível"
+        return "Disponível"
+    is_available.short_description = 'Status'
+
+    ## vamos criar um list_display para mostrar os sensores instalados em um equipamento, eu quero retornar o equipamento em que ele está instalado.
+    def listar_equipamentos(self, obj):
+        equipamentos = obj.instalacaosensor_set.values_list('idEquipamento__descricao', flat=True)
+        if equipamentos:
+            return ", ".join(equipamentos)
+        return "Nenhum equipamento instalado"
+    listar_equipamentos.short_description = 'Equipamentos Instalados'
 
 admin.site.register(CadastroSensor, CadastroSensorAdmin)
 
-class InstalacaoSensorInline(admin.TabularInline):
+class SensoresInstaladosInline(admin.TabularInline):
     model = InstalacaoSensor
-    fields = ('idSensor',  'dataInstalacaoSensor')
-    show_change_link = False
+    fields = ('idSensor', 'dataInstalacaoSensor')
+    readonly_fields = ('idSensor', 'dataInstalacaoSensor')
+    can_delete = False
+    extra = 0
+    verbose_name = 'Sensor Instalado'
+    verbose_name_plural = 'Sensores Instalados'
+
+    def has_add_permission(self, request, obj=None):
+        return False  # Não permite adicionar sensores aqui
+
+
+class AdicionarSensorInline(admin.TabularInline):
+    model = InstalacaoSensor
+    fields = ('idSensor', 'dataInstalacaoSensor')
+    extra = 1
+
+    def get_queryset(self, request):
+        # Retorna apenas os novos sensores a serem adicionados
+        return super().get_queryset(request).none()
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'idSensor':
-            # Aplicar o filtro para sensores
-            kwargs['queryset'] = CadastroSensor.objects.filter(
-                Q(instalacaosensor__isnull=True) |  # Sensores sem instalação
-                Q(instalacaosensor__data_remocao_sensor__isnull=False)  # Sensores com data de remoção
-            ).distinct()
+            obj_id = request.resolver_match.kwargs.get('object_id')
+            if obj_id:
+                # Mostra apenas sensores não instalados ou removidos
+                kwargs['queryset'] = CadastroSensor.objects.filter(
+                    Q(instalacaosensor__isnull=True) |
+                    Q(instalacaosensor__data_remocao_sensor__isnull=False)
+                ).distinct()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-
 class CadastroEquipamentoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'descricao', 'idOrigem', 'idFabricante',  'criado_em', 'atualizado_em')
-    search_fields = ('descricao', 'idOrigem')
+    list_display = ('id', 'descricao', 'idFabricante', 'listar_sensores', 'qtd_sensores')
+    search_fields = ('descricao', 'id')
+    inlines = [SensoresInstaladosInline, AdicionarSensorInline]
+
+
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['idFabricante',]
+        return []
+
+    fieldsets = (
+        ('Informaçõe do Equipamento', {
+            'fields': ('idFabricante', 'descricao', 'descricaoInstalacao')
+        }),
   
-    inlines = [InstalacaoSensorInline]
-    show_change_link = False
+
+    )
+
+
+    def listar_sensores(self, obj):
+        sensores = obj.instalacaosensor_set.values_list('idSensor__descricao', flat=True)
+        return ", ".join(sensores) if sensores else "Nenhum sensor instalado"
+
+    listar_sensores.short_description = "Sensores Instalados"
+
+    def qtd_sensores(self, obj):
+        return obj.instalacaosensor_set.count()
+
+    qtd_sensores.short_description = "Quantidade de Sensores"
 
 admin.site.register(CadastroEquipamento, CadastroEquipamentoAdmin)
 
 
 class CadastroTipoSensorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'descricao', 'idOrigem', 'IdUnidadeMedida', 'criado_em', 'atualizado_em')
-    search_fields = ('descricao', 'idOrigem')
+    list_display = ('id', 'descricao',  'IdUnidadeMedida',)
+    search_fields = ('descricao', 'id' )
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['IdUnidadeMedida',]
+        return []
+
+    fieldsets = (
+        ('Informaçõe do Tipo de Sensor', {
+            'fields': ( 'IdUnidadeMedida', 'descricao',)
+        }),
+     (
+         'Informação de leitura', {
+             'fields': ('leituraMinimaOperacao', 'leituraMaximaOperacao', 'leituraMinimaDesligado', 'leituraMaximaDesligado', 'leituraMinimaAlerta', 'leituraMaximaAlerta', 'leituraMinimaInterromper', 'leituraMaximaInterromper')}
+     ),
+    )
+    
     
 admin.site.register(CadastroTipoSensor, CadastroTipoSensorAdmin)
 
 class InstalacaoSensorAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'idSensor',  'idEquipamento__id' , 'idEquipamento__descricao', 'dataInstalacaoSensor', 'data_remocao_sensor','criado_em', 'atualizado_em') 
-    search_fields = ('idSensor__descricao',)   
+    list_display = ('id', 'idSensor',  'idEquipamento__id' , 'idEquipamento__descricao' , 'dataInstalacaoSensor', 'data_remocao_sensor') 
+    search_fields = ('descricao', 'id')  
+
+    def save_model(self, request, obj, form, change):
+        # Imprimir os dados da solicitação
+        print(f"Solicitação de salvamento de dados: {request}")
+        
+        # Imprimir os dados que estão sendo salvos
+        print(f"Dados salvos: {obj}")
+        
+        # Se quiser ver quais campos foram alterados, use o parâmetro 'change'
+        if change:
+            print(f"Campos alterados: {form.changed_data}")
+        
+        # Salvar o modelo
+        super().save_model(request, obj, form, change)
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['idSensor', 'idEquipamento',]
+        return []
+    fieldsets = (
+        ('Dados da Instalação', {
+            'fields': ('idSensor', 'idEquipamento', 'dataInstalacaoSensor', 'data_remocao_sensor')
+        }),
+    )
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'idSensor':
