@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import CadastroUnidadeMedida, CadastroFabricante, CadastroSensor, CadastroEquipamento, CadastroTipoSensor, InstalacaoSensor
 from django.db.models import Q
-from django.forms import ModelForm
+from django.utils.html import format_html
 
 
 
@@ -51,6 +51,46 @@ class CadastroSensorAdmin(admin.ModelAdmin):
             return ", ".join(equipamentos)
         return "Nenhum equipamento instalado"
     listar_equipamentos.short_description = 'Equipamentos Instalados'
+    
+    fieldsets = (
+        ('Informaçõe do Sensor', {
+            'fields': ( 'IdTipoSensor', 'IdFabricante', 'descricao',)
+        }),
+
+    )
+
+    def get_fieldsets(self, request, obj=None):
+            if not obj:  # Se o objeto ainda não existe (está na página de adição)
+                return self.fieldsets  # Retorna os fieldsets padrão
+
+            # Caso contrário (na página de edição), adiciona o link de ação
+            return (
+                ('Informações do Sensor', {
+                    'fields': ('IdTipoSensor', 'IdFabricante', 'descricao',)
+                }),
+                ('Ações', {
+                    'fields': ('Sensor_link', 'Fabricante_link')  # Adiciona o campo do link com a ação
+                }),
+            )
+    def Fabricante_link(self, obj):
+         return format_html(
+            '<button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;" onclick="window.open(\'{}\', \'_blank\')"> + Fabricante  </button>',
+            '/admin/rfs/cadastrofabricante/add/'  # Ajuste para o nome da sua aplicação e modelo
+        )
+    Fabricante_link.short_description = 'Adicionar Fabricante'
+    def Sensor_link(self, obj):
+         return format_html(
+            '<button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;" onclick="window.open(\'{}\', \'_blank\')"> + Tipo Sensor </button>',
+            '/admin/rfs/cadastrotiposensor/add/'  # Ajuste para o nome da sua aplicação e modelo
+        )
+    Sensor_link.short_description = 'Adicionar tipo de sensor'
+    readonly_fields = ['Sensor_link', 'Fabricante_link', 'IdTipoSensor', 'IdFabricante']  # Torna o link um campo de leitura
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            # Apenas exibe o link de adição de UnidadeMedida se estiver editando um objeto existente
+            return self.readonly_fields + ['Sensor_link']
+        return self.readonly_fields
 
 admin.site.register(CadastroSensor, CadastroSensorAdmin)
 
