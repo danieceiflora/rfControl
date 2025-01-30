@@ -170,6 +170,13 @@ class CadastroTipoSensorAdmin(admin.ModelAdmin):
         if obj:
             return ['IdUnidadeMedida',]
         return []
+    
+    def UnidadeMedida_link(self, obj):
+         return format_html(
+            '<button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;" onclick="window.open(\'{}\', \'_blank\')"> + Unidade de Medida </button>',
+            '/admin/rfs/cadastrounidademedida/add/'  # Ajuste para o nome da sua aplicação e modelo
+        )
+
 
     fieldsets = (
         ('Informaçõe do Tipo de Sensor', {
@@ -179,8 +186,10 @@ class CadastroTipoSensorAdmin(admin.ModelAdmin):
          'Informação de leitura', {
              'fields': ('leituraMinimaOperacao', 'leituraMaximaOperacao', 'leituraMinimaDesligado', 'leituraMaximaDesligado', 'leituraMinimaAlerta', 'leituraMaximaAlerta', 'leituraMinimaInterromper', 'leituraMaximaInterromper')}
      ),
+     
     )
     
+
     
 admin.site.register(CadastroTipoSensor, CadastroTipoSensorAdmin)
 

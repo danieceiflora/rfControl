@@ -182,12 +182,8 @@ JAZZMIN_UI_TWEAKS = {
 JAZZMIN_SETTINGS = {
 
     
-    ##"site_logo": "images/logo.png",
-
+    "site_logo": "images/logo.png",
     
-
-   
-
     "show_ui_builder": True,
 
     "site_header": "Rf Control",
