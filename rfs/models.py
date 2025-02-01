@@ -18,8 +18,6 @@ class CadastroUnidadeMedida(models.Model):
     def __str__(self):
         return f"{self.id} - {self.descricao}"
     
-
-
 class CadastroFabricante(models.Model):
     
     nome = models.CharField(max_length=200, verbose_name='Nome')

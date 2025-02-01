@@ -62,7 +62,7 @@ class CadastroSensorAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
             if not obj:  # Se o objeto ainda não existe (está na página de adição)
                 return self.fieldsets  # Retorna os fieldsets padrão
-
+            
             # Caso contrário (na página de edição), adiciona o link de ação
             return (
                 ('Informações do Sensor', {
@@ -84,13 +84,12 @@ class CadastroSensorAdmin(admin.ModelAdmin):
             '/admin/rfs/cadastrotiposensor/add/'  # Ajuste para o nome da sua aplicação e modelo
         )
     Sensor_link.short_description = 'Adicionar tipo de sensor'
-    readonly_fields = ['Sensor_link', 'Fabricante_link', 'IdTipoSensor', 'IdFabricante']  # Torna o link um campo de leitura
+    #readonly_fields = ['Sensor_link', 'Fabricante_link',]  # Torna o link um campo de leitura
 
     def get_readonly_fields(self, request, obj=None):
-        if obj:
-            # Apenas exibe o link de adição de UnidadeMedida se estiver editando um objeto existente
-            return self.readonly_fields + ['Sensor_link']
-        return self.readonly_fields
+        if obj and request.path.endswith('/change/'):
+            return ['IdTipoSensor', 'IdFabricante', 'Sensor_link', 'Fabricante_link']
+        return ['Sensor_link', 'Fabricante_link']
 
 admin.site.register(CadastroSensor, CadastroSensorAdmin)
 
@@ -168,7 +167,7 @@ class CadastroTipoSensorAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ['IdUnidadeMedida',]
+            return ['IdUnidadeMedida', 'UnidadeMedida_link']
         return []
     
     def UnidadeMedida_link(self, obj):
@@ -176,19 +175,24 @@ class CadastroTipoSensorAdmin(admin.ModelAdmin):
             '<button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;" onclick="window.open(\'{}\', \'_blank\')"> + Unidade de Medida </button>',
             '/admin/rfs/cadastrounidademedida/add/'  # Ajuste para o nome da sua aplicação e modelo
         )
-
-
-    fieldsets = (
-        ('Informaçõe do Tipo de Sensor', {
-            'fields': ( 'IdUnidadeMedida', 'descricao',)
-        }),
-     (
-         'Informação de leitura', {
-             'fields': ('leituraMinimaOperacao', 'leituraMaximaOperacao', 'leituraMinimaDesligado', 'leituraMaximaDesligado', 'leituraMinimaAlerta', 'leituraMaximaAlerta', 'leituraMinimaInterromper', 'leituraMaximaInterromper')}
-     ),
-     
-    )
-    
+    UnidadeMedida_link.short_description = 'Adicionar Unidade de Medida'
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = (
+            ('Informaçõe do Tipo de Sensor', {
+                'fields': ( 'IdUnidadeMedida', 'descricao',)
+            }),
+            (
+                'Informação de leitura', {
+                    'fields': ('leituraMinimaOperacao', 'leituraMaximaOperacao', 'leituraMinimaDesligado', 'leituraMaximaDesligado', 'leituraMinimaAlerta', 'leituraMaximaAlerta', 'leituraMinimaInterromper', 'leituraMaximaInterromper')}
+            ),
+        )
+        if obj and request.path.endswith('/change/'):
+            fieldsets += (
+                ('Ações', {
+                    'fields': ('UnidadeMedida_link',)
+                }),
+            )
+        return fieldsets
 
     
 admin.site.register(CadastroTipoSensor, CadastroTipoSensorAdmin)
@@ -198,29 +202,47 @@ class InstalacaoSensorAdmin(admin.ModelAdmin):
     list_display = ('id', 'idSensor',  'idEquipamento__id' , 'idEquipamento__descricao' , 'dataInstalacaoSensor', 'data_remocao_sensor') 
     search_fields = ('descricao', 'id')  
 
-    def save_model(self, request, obj, form, change):
-        # Imprimir os dados da solicitação
-        print(f"Solicitação de salvamento de dados: {request}")
-        
-        # Imprimir os dados que estão sendo salvos
-        print(f"Dados salvos: {obj}")
-        
-        # Se quiser ver quais campos foram alterados, use o parâmetro 'change'
-        if change:
-            print(f"Campos alterados: {form.changed_data}")
-        
+    def save_model(self, request, obj, form, change):       
         # Salvar o modelo
         super().save_model(request, obj, form, change)
+    
+    def Sensor_link(self, obj):
+        return format_html(
+            '<button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;" onclick="window.open(\'{}\', \'_blank\')"> + Sensor </button>',
+            '/admin/rfs/cadastrosensor/add/'  # Ajuste para o nome da sua aplicação e modelo
+        )
+    Sensor_link.short_description = 'Adicionar Sensor'
+
+    def Equipamento_link(self, obj):
+        return format_html(
+            '<button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;" onclick="window.open(\'{}\', \'_blank\')"> + Equipamento </button>',
+            '/admin/rfs/cadastroequipamento/add/'  # Ajuste para o nome da sua aplicação e modelo
+        )
+    Equipamento_link.short_description = 'Adicionar Equipamento'
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ['idSensor', 'idEquipamento',]
+            return ['idSensor', 'idEquipamento', 'Equipamento_link', 'Sensor_link']
         return []
-    fieldsets = (
-        ('Dados da Instalação', {
-            'fields': ('idSensor', 'idEquipamento', 'dataInstalacaoSensor', 'data_remocao_sensor')
-        }),
-    )
+    def get_fieldsets(self, request, obj =None):
+
+        fieldsets = (
+            ('Dados da Instalação', {
+                'fields': ('idSensor', 'idEquipamento', 'dataInstalacaoSensor',)
+            }),
+            ('Remoção', {
+                'fields': ('data_remocao_sensor',)
+            })
+        
+        )
+        if obj and request.path.endswith('/change/'):
+                fieldsets += (
+                    ('Ações', {
+                        'fields': ('Equipamento_link', 'Sensor_link')
+                    }),
+                )
+        return fieldsets
+
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'idSensor':
