@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import CadastroUnidadeMedida, CadastroFabricante, CadastroEquipamento, CadastroSensor, CadastroTipoSensor, InstalacaoSensor
+from .models import CadastroLeitura
 
 class UnidadeMedidaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,4 +30,9 @@ class CadastroTipoSensorSerializer(serializers.ModelSerializer):
 class InstalacaoSensorSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstalacaoSensor
+        fields = '__all__'
+
+class CadastroLeituraSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CadastroLeitura
         fields = '__all__'

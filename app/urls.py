@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rfs.views import UnidadeMedidaView, FabricanteView, SensorView, EquipamentoView, TipoSensorView, UnidadeMedidaRetrieveUpdateDestroyView, FabricanteRetrieveUpdateDestroyView
 from rfs.views import SensorRetrieveUpdateDestroyView, EquipamentoRetrieveUpdateDestroyView, TipoSensorRetrieveUpdateDestroyView, InstalacaoSensorView, InstalacaoSensorRetrieveUpdateDestroyView
+from rfs.views import LeituraRetrieveUpdateDestroyView, CadastroLeituraView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 
@@ -17,6 +18,7 @@ urlpatterns = [
     path('api/v1/equipamento/', EquipamentoView.as_view(), name='equipamento'),
     path('api/v1/tipo-sensor/', TipoSensorView.as_view(), name='tipo-sensor'),
     path('api/v1/instalacao-sensor/', InstalacaoSensorView.as_view(), name='instalacao-sensor'),
+    path('api/v1/leitura-sensor/', CadastroLeituraView.as_view(), name='leitura-sensor'),
 
     ## rotas api, v1 editar e apagar.
     path('api/v1/unidade-medida/<int:pk>', UnidadeMedidaRetrieveUpdateDestroyView.as_view(), name='unidade-medida'),
@@ -25,6 +27,7 @@ urlpatterns = [
     path('api/v1/equipamento/<int:pk>', EquipamentoRetrieveUpdateDestroyView.as_view(), name='equipamento'),
     path('api/v1/tipo-sensor/<int:pk>', TipoSensorRetrieveUpdateDestroyView.as_view(), name='tipo-sensor'),
     path('api/v1/instalacao-sensor/<int:pk>', InstalacaoSensorRetrieveUpdateDestroyView.as_view(), name='instalacao-sensor'),
+    path('api/v1/leitura-sensor/<int:pk>', LeituraRetrieveUpdateDestroyView.as_view(), name='leitura-sensor'),
 
     path('api/v1/', include('authentication.urls')),
     

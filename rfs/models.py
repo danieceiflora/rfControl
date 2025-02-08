@@ -129,4 +129,23 @@ class InstalacaoSensor(models.Model):
     def __str__(self):
         return str(self.idSensor)
 
- 
+class CadastroLeitura(models.Model):
+    idSensor = models.ForeignKey(CadastroSensor, on_delete=models.PROTECT, verbose_name='Sensor')
+    idEquipamento = models.ForeignKey(CadastroEquipamento, on_delete=models.PROTECT, verbose_name="Equipamento")
+    dataLeitura = models.DateTimeField(verbose_name='Data da Leitura')
+    leitura = models.FloatField(verbose_name='Leitura')
+
+    class Meta:
+        verbose_name = 'Leitura'
+        verbose_name_plural = 'Leituras'
+    
+    def clean(self):
+        # Verificar se o sensor está instalado no equipamento informado
+        if not InstalacaoSensor.objects.filter(idSensor=self.idSensor, idEquipamento=self.idEquipamento, data_remocao_sensor__isnull=True).exists():
+            raise ValidationError(f"O sensor {self.idSensor} não está instalado no equipamento {self.idEquipamento}.")
+        
+        super().clean()
+        
+
+    def __str__(self):
+        return str(self.idSensor)

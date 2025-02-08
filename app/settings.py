@@ -184,10 +184,11 @@ JAZZMIN_UI_TWEAKS = {
 
 JAZZMIN_SETTINGS = {
 
-    
+    "copyright": "SafeRun",
+
     "site_logo": "images/logo.png",
     
-    "show_ui_builder": True,
+    "show_ui_builder": False,
 
     "site_header": "",
     # title of the window (Will default to current_admin_site.site_title if absent or None)
@@ -223,6 +224,7 @@ JAZZMIN_SETTINGS = {
         "rfs.CadastroEquipamento": "fas fa-wrench",
         "rfs.CadastroTipoSensor": "fas fa-shapes",
         "rfs.InstalacaoSensor": "fas fa-calendar-check",
+        "rfs.CadastroLeitura": "fas fa-chart-line",
         
 
     },

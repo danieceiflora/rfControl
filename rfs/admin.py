@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import CadastroUnidadeMedida, CadastroFabricante, CadastroSensor, CadastroEquipamento, CadastroTipoSensor, InstalacaoSensor
+from .models import CadastroLeitura
 from django.db.models import Q
 from django.db.models import OuterRef
 
@@ -75,7 +76,7 @@ class SensoresInstaladosInline(admin.TabularInline):
     extra = 0
     verbose_name = 'Sensor Instalado'
     verbose_name_plural = 'Sensores Instalados'
-    
+
     ## retornar apenas os sensores que não tem data de remoção preenchidos
     def get_queryset(self, request):
         # Retorna apenas os sensores que não tem data de remoção preenchidos
@@ -171,7 +172,7 @@ admin.site.register(CadastroTipoSensor, CadastroTipoSensorAdmin)
 class InstalacaoSensorAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'idSensor',  'idEquipamento__id' , 'idEquipamento__descricao' , 'dataInstalacaoSensor', 'data_remocao_sensor') 
-    search_fields = ('descricao', 'id')  
+    search_fields = ('idSensor__descricao', 'idEquipamento__descricao', 'id')  
 
     def save_model(self, request, obj, form, change):       
         # Salvar o modelo
@@ -209,4 +210,26 @@ class InstalacaoSensorAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
       
 admin.site.register(InstalacaoSensor, InstalacaoSensorAdmin)
+##view para cadastro de leitura 
 
+class CadastroLeituraAdmin(admin.ModelAdmin):
+    list_display = ('id', 'idSensor',  'idEquipamento' , 'dataLeitura', 'leitura') 
+    search_fields = ('descricao', 'id')  
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['idSensor', 'idEquipamento',]
+        return []
+    
+    def get_fieldsets(self, request, obj =None):
+        
+        fieldsets = (
+            ('Informação da Leitura', {
+                'fields': ('idSensor', 'idEquipamento', 'dataLeitura', 'leitura')
+            }),
+        )
+        
+        return fieldsets
+    
+
+admin.site.register(CadastroLeitura, CadastroLeituraAdmin)

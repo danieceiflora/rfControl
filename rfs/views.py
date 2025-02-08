@@ -1,7 +1,9 @@
 from .serializers import UnidadeMedidaSerializer, CadastroFabricanteSerializer, CadastroEquipamentoSerializer, CadastroSensorSerializer, CadastroTipoSensorSerializer, InstalacaoSensorSerializer
+from .serializers import CadastroLeituraSerializer
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from .models import CadastroUnidadeMedida, CadastroEquipamento, CadastroFabricante, CadastroSensor, CadastroTipoSensor, InstalacaoSensor
+from .models import CadastroLeitura
 from  app.permissions import GlobalDefaultPermissionClass
 from django import forms
 from django.core.exceptions import ValidationError
@@ -72,29 +74,12 @@ class InstalacaoSensorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAP
     queryset = InstalacaoSensor.objects.all()
     serializer_class = InstalacaoSensorSerializer
 
+class CadastroLeituraView(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated, GlobalDefaultPermissionClass,)
+    queryset = CadastroLeitura.objects.all()
+    serializer_class = CadastroLeituraSerializer
 
-class SensoresInstaladosForm(forms.ModelForm):
-    class Meta:
-        model = InstalacaoSensor
-        fields = ('idSensor', 'dataInstalacaoSensor')  # Certifique-se de que os campos existem no modelo
-        widgets = {
-            'idSensor': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'dataInstalacaoSensor': forms.TextInput(attrs={'readonly': 'readonly'}),
-        }
-
-
-class AdicionarSensorForm(forms.ModelForm):
-    class Meta:
-        model = InstalacaoSensor
-        fields = ('idSensor', 'dataInstalacaoSensor')
-
-    def clean(self):
-        cleaned_data = super().clean()
-        idSensor = cleaned_data.get('idSensor')
-        idEquipamento = cleaned_data.get('idEquipamento')
-
-        # Validação personalizada
-        if InstalacaoSensor.objects.filter(idSensor=idSensor, idEquipamento=idEquipamento).exists():
-            raise ValidationError("Este sensor já está instalado neste equipamento.")
-
-        return cleaned_data
+class LeituraRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated, GlobalDefaultPermissionClass,)
+    queryset = CadastroLeitura.objects.all()
+    serializer_class = CadastroLeituraSerializer
