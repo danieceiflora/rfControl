@@ -75,6 +75,11 @@ class SensoresInstaladosInline(admin.TabularInline):
     extra = 0
     verbose_name = 'Sensor Instalado'
     verbose_name_plural = 'Sensores Instalados'
+    
+    ## retornar apenas os sensores que não tem data de remoção preenchidos
+    def get_queryset(self, request):
+        # Retorna apenas os sensores que não tem data de remoção preenchidos
+        return super().get_queryset(request).filter(data_remocao_sensor__isnull=True)
 
     def has_add_permission(self, request, obj=None):
         return False  # Não permite adicionar sensores aqui
